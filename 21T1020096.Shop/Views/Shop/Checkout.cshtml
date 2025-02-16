@@ -1,0 +1,172 @@
+﻿@model IEnumerable<CartItem>
+@{
+    var user = User.GetUserData();
+    var customer = SV21T1020096.BusinessLayers.CommonDataService.GetCustomer(Convert.ToInt32(user.UserID));
+    decimal sum = 0;
+}
+<div class="page-header breadcrumb-wrap">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html" rel="nofollow">Trang chủ</a>
+            <span></span> Cửa hàng
+            <span></span> Thanh toán
+        </div>
+    </div>
+</div>
+<section class="mt-60 mb-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-25">
+                    <h3>Địa chỉ giao hàng</h3>
+                </div>
+                <form id="frmOrderInit" method="post" action="~/Shop/Init" class="form-horizontal">
+                    <input type="hidden" name="customerID" value="@user.UserID" />
+                    <div class="form-group">
+                        Thành phố
+                        <div class="custom_select">
+                            <select class="form-control select-active" name="deliveryProvince">
+                                @* <option value="">--Chọn thành phố--</option> *@
+                                @foreach (var pv in SV21T1020096.BusinessLayers.CommonDataService.ListOfProvinces())
+                                {
+                                    if(customer?.Province == pv.ProvinceName){
+                                        <option value="@pv.ProvinceName" selected>@pv.ProvinceName</option>
+                                    }
+                                    else{
+                                        <option value="@pv.ProvinceName">@pv.ProvinceName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        Địa chỉ
+                        <input type="text" name="deliveryAddress" value="@customer?.Address" />
+                    </div>
+                    @* <div class="ship_detail">
+                        <div class="form-group">
+                            <div class="chek-form">
+                                <div class="custome-checkbox">
+                                    <input class="form-check-input" type="checkbox" id="differentaddress">
+                                    <label class="form-check-label label_info" data-bs-toggle="collapse" data-target="#collapseAddress" href="#collapseAddress" aria-controls="collapseAddress" for="differentaddress"><span>Giao hàng đến địa chỉ khác?</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="collapseAddress" class="different_address collapse in">
+                            <div class="form-group">
+                                <div class="custom_select">
+                                    <select class="form-control select-active" name="deliveryProvince2">
+                                        <option value="">--Chọn thành phố--</option>
+                                        @foreach (var pv in SV21T1020096.BusinessLayers.CommonDataService.ListOfProvinces())
+                                        {
+                                            <option value="@pv.ProvinceName">@pv.ProvinceName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="deliveryAddress2" required="" placeholder="Địa chỉ *" value="">
+                            </div>
+                        </div>
+                    </div> *@
+                    <button type="submit">Đặt hàng</button>
+                    <div class="form-group">
+                        <span id="error-message" style="color:red"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="order_review">
+                    <div class="mb-20">
+                        <h3>Đơn đặt hàng</h3>
+                    </div>
+                    <div class="table-responsive order_table text-center">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">sản phẩm</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    sum = sum + item.TotalPrice;
+                                    <tr>
+                                        @if (item.Photo != null)
+                                        {
+                                            <td class="image product-thumbnail"><img src="@item.Photo" alt="#"></td>
+                                        }
+                                        else
+                                        {
+                                            <td class="image product-thumbnail"><img src="~/images/products/product-1-3.jpg" alt="#"></td>
+                                        }
+                                        <td><a href="~/Shop/ProductView/@item.ProductID">@item.ProductName</a> <span class="product-qty">x @item.Quantity</span></td>
+                                        <td>@item.TotalPrice.ToString("N0")</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <th>Tổng tiền hàng</th>
+                                    <td class="product-subtotal" colspan="2">@sum.ToString("N0")</td>
+                                </tr>
+                                <tr>
+                                    <th>Shipping</th>
+                                    <td colspan="2"><em>Miễn phí vận chuyển</em></td>
+                                </tr>
+                                <tr>
+                                    <th>Tổng</th>
+                                    <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">@sum.ToString("N0")</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#frmOrderInit").submit(function (e) {
+                    e.preventDefault();
+
+                // Kiểm tra địa chỉ mới
+                // if ($("#differentaddress").is(":checked")) {
+                //     var newProvince = $("select[name='deliveryProvince2']").val();
+                //     var newAddress = $("input[name='deliveryAddress2']").val();
+
+                //     if (!newProvince) {
+                //         $("#error-message").html("Vui lòng chọn thành phố");
+                //         return false;
+                //     }
+                //     if (!newAddress) {
+                //         $("#error-message").html("Vui lòng nhập địa chỉ");
+                //         return false;
+                //     }
+
+                //     $("input[name='deliveryProvince']").val(newProvince);
+                //     $("input[name='deliveryAddress']").val(newAddress);
+                // }
+
+                // Gửi Ajax request
+                $.ajax({
+                    url: $(this).prop("action"),
+                    method: $(this).prop("method"),
+                    data : $(this).serializeArray(),
+                    success: function (result) {
+                        if(isNaN(result)){
+                            $("#error-message").html(result);   
+                        } else {
+                            window.location.href = "@Url.Action("Index", "Account_Inf", new { id = user.UserID })";
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $("#error-message").html("Có lỗi xảy ra: " + error);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,14 @@
+
+{
+    "region" : "ap-southeast-1",
+    "configuration" : "Debug",
+    "framework"     : "net8.0-windows",
+    "self-contained" : false,
+    "application"    : "WowyShop",
+    "environment"    : "WowyShop-env",
+    "app-path"       : "/",
+    "iis-website"    : "Default Web Site",
+    "enable-xray"    : false,
+    "enhanced-health-type" : "enhanced",
+    "additional-options"   : ""
+}

@@ -1,0 +1,152 @@
+﻿@model IEnumerable<CartItem>
+@{
+    decimal sumOfPrice = 0;
+}
+<div class="page-header breadcrumb-wrap">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="~/Home/Index" rel="nofollow">Trang chủ</a>
+            <span></span> Shop
+            <span></span> Giỏ hàng
+        </div>
+    </div>
+</div>
+<section class="mt-60 mb-20">
+    <div class="container" id="shoppingCart">
+        <div class="row">
+            <div class="col-12 mb-10" style="">
+                <div class="table-responsive">
+                    <table class="table shopping-summery text-center clean">
+                        <thead>
+                            <tr class="main-heading">
+                                <th scope="col">Ảnh</th>
+                                <th scope="col">Tên sản phẩm</th>
+                                <th scope="col">Giá</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Tổng giá</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count() > 0)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    sumOfPrice += item.TotalPrice;
+                                    <tr>
+                                        @if (item.Photo != null)
+                                        {
+                                            <td class="default-img"><img src="@item.Photo" alt="#"></td>
+                                        }
+                                        else
+                                        {
+                                            <td class=""><img src="~/wowy-frontend/assets/imgs/shop/product-1-4.jpg" alt="#"></td>
+                                        }
+                                        <td class="product-des product-name">
+                                            <p class="product-name"><a href="~/Shop?ProductView/@item.ProductID">@item.ProductName</a></p>
+                                        </td>
+                                        <td class="price" data-title="Price"><span>@item.SalePrice.ToString("N0") </span></td>
+                                        <td class="text-center" data-title="Stock">
+                                            <div class="detail-qty border radius  m-auto">
+                                                <a href="#" class="qty-down"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+                                                <span class="qty-val">@item.Quantity</span>
+                                                <a href="#" class="qty-up"><i class="fa fa-caret-up" aria-hidden="true"></i></a>
+                                            </div>
+                                        </td>
+                                        <td class="text-right" data-title="Cart">
+                                            <span>@item.TotalPrice.ToString("N0") </span>
+                                        </td>
+                                        <td class="action" data-title="Remove">
+                                            <a href="~/Shop/RemoveFromCart/@item.ProductID" class="text-muted ajax-link">
+                                                <i class="fa fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td colspan="6" class="text-end">
+                                        <a href="~/Shop/ClearCart" class="text-muted ajax-link"> <i class="fa fa-times-circle"></i> Xoá toàn bộ giỏ hàng</a>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <p>Giỏ hàng trống</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="cart-action text-end">
+                    <a href="~/Home/Index" class="btn btn-rounded"><i class="far fa-cart-plus mr-5"></i>Tiếp tục mua hàng</a>
+                </div>
+            </div>
+            <div class="row-cols-1">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="border p-md-4 p-30 border-radius-10 cart-totals">
+                            <div class="heading_s1 mb-3">
+                                <h4>Tổng giá giỏ hàng</h4>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td class="cart_total_label">Tổng giác các sản phẩm </td>
+                                            <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">@sumOfPrice.ToString("N0")</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="cart_total_label">Phí giao hàng</td>
+                                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Miễn phí giao hàng</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="cart_total_label">Tổng</td>
+                                            <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand">@sumOfPrice.ToString("N0")</span></strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a href="~/Shop/Checkout" class="btn btn-rounded"> <i class="fa fa-share-square mr-10"></i> Đặt hàng</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider center_icon mt-50 mb-50"><i class="fa fa-gem"></i></div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script>
+        function showShoppingCart(){
+                $.ajax({
+                    url: "ShoppingCart",
+                    type: "GET",
+                    success: function(data){
+                        $("#shoppingCart").html(data);
+                    }
+                });
+            }
+                        $(document).ready(function(){
+            // Gán event vào container cha tĩnh
+            $(document).on('click', '.ajax-link', function(e){
+                e.preventDefault();
+                var url = $(this).prop("href");
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function(data){
+                        if (data !== ""){
+                            alert(data);
+                        } else {
+                            $("#shoppingCart").load(location.href + " #shoppingCart>*");
+                        }
+                    }
+                });
+            });
+        });
+
+    </script>
+}

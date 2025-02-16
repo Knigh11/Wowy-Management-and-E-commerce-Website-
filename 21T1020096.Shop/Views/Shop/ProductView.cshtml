@@ -1,0 +1,390 @@
+﻿@model SV21T1020096.DomainModels.Product
+@using SV21T1020096.DomainModels
+@using SV21T1020096.BusinessLayers
+@using SV21T1020096.Shop.Models
+@using System.Linq
+@{
+    var cate_Name = CommonDataService.GetCategory(Model.CategoryID)?.CategoryName;
+    var suppName = CommonDataService.GetSupplier(Model.SupplierID)?.SupplierName;
+    var attributes = ProductDataService.ListAttributes(Model.ProductID).OrderBy(attr => attr.DisplayOrder).ToList();
+    var photos = ProductDataService.ListPhotos(Model.ProductID).OrderBy(photo => photo.DisplayOrder).ToList();
+    var cartItem = new CartItem()
+            {
+                ProductID = Model.ProductID,
+                Photo = Model.Photo,
+                ProductName = Model.ProductName,
+                Unit = Model.Unit,
+                SalePrice = Model.Price,
+                Quantity = 1
+            };
+
+}
+<div class="header-middle header-middle-ptb-1 d-none d-lg-block">
+    <div class="container">
+        <div class="header-wrap header-space-between">
+            <div class="logo logo-width-1">
+                <a href="~/Home"><img src="~/wowy-frontend/assets/imgs/theme/logo-default.png" alt="logo"></a>
+            </div>
+            <div class="search-style-2">
+                <form onsubmit="return handleSubmit()">
+                    <select class="select-active" id="SupplierID">
+                        <option value="">Tất cả nhà cung cấp</option>
+                        @foreach (var supplier in CommonDataService.ListSuppliers())
+                        {
+                            if (supplier.SupplierID == Model.SupplierID)
+                            {
+                                <option value="@supplier.SupplierID" selected>
+                                    @supplier.SupplierName
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@supplier.SupplierID">
+                                    @supplier.SupplierName
+                                </option>
+                            }
+                        }
+                    </select>
+                    <input id="SearchValue" type="text" class="form-control" placeholder="Nhập mặt hàng hàng cần tìm" value="">
+                    <button id="filterBtn" type="submit">
+                        <i class="far fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="header-action-right">
+                <div class="header-action-2">
+                    <div class="header-action-icon-2" id="cart-wrapper">
+                        @if (User.GetUserData() != null)
+                        {
+                            <a class="mini-cart-icon" href="~/Shop/ShoppingCart">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-cart.svg">
+                                <span class="pro-count blue" id="cartCount">
+                                    @if (ViewBag.CountProduct == 0) { }
+                                    else
+                                    {
+                                        @ViewBag.CountProduct
+                                        ;
+                                    }
+                                </span>
+                            </a>
+                            <div id="shoppingCart">
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="mini-cart-icon" href="~/Shop/ShoppingCart">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-cart.svg">
+                            </a>
+                        }
+                    </div>
+                    <div class="header-action-icon-2">
+                        @if (User.GetUserData() == null)
+                        {
+                            <a href="~/Account/Login">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-user.svg">
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="~/Account_Inf/Index">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-user.svg">
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end search-->
+<div class="page-header breadcrumb-wrap">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="~/Home" rel="nofollow">Trang chủ</a>
+            <span></span> @cate_Name
+            <span></span> @suppName
+            <span></span> @Model.ProductName
+        </div>
+    </div>
+</div>
+<section class="mt-60 mb-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="product-detail accordion-detail">
+                    <div class="row mb-50">
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="detail-gallery">
+                                <span class="zoom-icon"><i class="fa fa-search-plus"></i></span>
+                                <!-- MAIN SLIDES -->
+                                <div class="product-image-slider">
+                                    @if (Model.Photo != "")
+                                    {
+                                        if (photos.Count() != 0)
+                                        {
+                                            <figure class="border-radius-10">
+                                                <img src="@Model.Photo" alt="product image">
+                                            </figure>
+                                            foreach (ProductPhoto item in photos)
+                                            {
+                                                <figure class="border-radius-10">
+                                                    <img src="@item.Photo" alt="product image">
+                                                </figure>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <figure class="border-radius-10">
+                                                <img src="@Model.Photo" alt="product image">
+                                            </figure>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <figure class="border-radius-10">
+                                            <img src="~/wowy-frontend/assets/imgs/shop/product-2-1.jpg" alt="product image">
+                                        </figure>
+                                        <figure class="border-radius-10">
+                                            <img src="~/wowy-frontend/assets/imgs/shop/product-3-4.jpg" alt="product image">
+                                        </figure>
+                                        <figure class="border-radius-10">
+                                            <img src="~/wowy-frontend/assets/imgs/shop/product-4-1.jpg" alt="product image">
+                                        </figure>
+                                        <figure class="border-radius-10">
+                                            <img src="~/wowy-frontend/assets/imgs/shop/product-5-1.jpg" alt="product image">
+                                        </figure>
+                                        <figure class="border-radius-10">
+                                            <img src="~/wowy-frontend/assets/imgs/shop/product-6-1.jpg" alt="product image">
+                                        </figure>
+                                        <figure class="border-radius-10">
+                                            <img src="~/wowy-frontend/assets/imgs/shop/product-7-1.jpg" alt="product image">
+                                        </figure>
+                                        <figure class="border-radius-10">
+                                            <img src="~/wowy-frontend/assets/imgs/shop/product-9-1.jpg" alt="product image">
+                                        </figure>
+                                    }
+                                </div>
+                                <!-- THUMBNAILS -->
+                                <div class="slider-nav-thumbnails pl-15 pr-15">
+                                    @{
+                                        if (photos.Count() != 0)
+                                        {
+                                            <div>
+                                                <img src="@Model.Photo" alt="product image">
+                                            </div>
+                                            foreach (ProductPhoto item in photos)
+                                            {
+                                                if (item.IsHidden) continue;
+                                                <div>
+                                                    <img src="@item.Photo" alt="product image">
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (Model.Photo != "")
+                                            {
+                                                <div><img src="@Model.Photo" alt="product image"></div>
+                                            }
+                                            else
+                                            {
+                                                <div><img src="~/wowy-frontend/assets/imgs/shop/thumbnail-1.jpg" alt="product image"></div>
+                                                <div><img src="~/wowy-frontend/assets/imgs/shop/thumbnail-2.jpg" alt="product image"></div>
+                                                <div><img src="~/wowy-frontend/assets/imgs/shop/thumbnail-3.jpg" alt="product image"></div>
+                                                <div><img src="~/wowy-frontend/assets/imgs/shop/thumbnail-4.jpg" alt="product image"></div>
+                                            }
+                                        }
+                                    }
+
+                                </div>
+                            </div>
+                            <!-- End Gallery -->
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                            <form action="~/Shop/AddToCart" method="post" class="frmAddToCart">
+                                <input type="hidden" name="@nameof(cartItem.ProductID)" value="@cartItem.ProductID" />
+                                <input type="hidden" name="@nameof(cartItem.ProductName)" value="@cartItem.ProductName" />
+                                <input type="hidden" name="@nameof(cartItem.Photo)" value="@cartItem.Photo" />
+                                <input type="hidden" name="@nameof(cartItem.Unit)" value="@cartItem.Unit" />
+                                <input type="hidden" name="@nameof(cartItem.SalePrice)" value="@cartItem.SalePrice" />
+                                <div class="detail-info">
+                                    <h2 class="title-detail">@Model.ProductName</h2>
+                                    <div class="product-detail-rating">
+                                        <div class="pro-details-brand">
+                                            <span> Đơn vị tính: <strong>@Model.Unit</strong></span>
+                                        </div>
+                                        <div class="product-rate-cover text-end">
+                                            <div class="product-rate d-inline-block">
+                                                <div class="product-rating" style="width:90%">
+                                                </div>
+                                            </div>
+                                            <span class="font-small ml-5 text-muted"></span>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix product-price-cover">
+                                        <div class="product-price primary-color float-left">
+                                            <ins><span class="text-brand">@Model.Price.ToString("N0")</span></ins>
+                                            @* <ins><span class="old-price font-md ml-15">$200.00</span></ins> *@
+                                            @* <span class="save-price  font-md color3 ml-15">25% Off</span> *@
+                                        </div>
+                                    </div>
+                                    <div class="bt-1 border-color-1 mt-15 mb-15"></div>
+                                    <div class="short-desc mb-30">
+                                        <p>@Model.ProductDescription</p>
+                                    </div>
+                                    <div class="product_sort_info font-xs mb-30">
+                                        <ul>
+                                            <li class="mb-10"><i class="far fa-hourglass mr-5 text-brand"></i> 1 năm bảo hành</li>
+                                            <li class="mb-10"><i class="far fa-paper-plane mr-5 text-brand"></i> 30 ngày đổi trả</li>
+                                            <li><i class="far fa-address-card mr-5 text-brand"></i> Thanh toán khi nhận hàng</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                    <div class="detail-extralink">
+                                        <div class="detail-qty border radius">
+                                            <a href="#" class="qty-down"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+                                            <span class="qty-val">1</span>
+                                            <input type="hidden" name="@nameof(cartItem.Quantity)" value="1" />
+                                            <a href="#" class="qty-up"><i class="fa fa-caret-up" aria-hidden="true"></i></a>
+                                        </div>
+                                        <div class="product-extra-link2">
+                                            <button type="submit" class="button button-add-to-cart">Thêm vào giỏ</button>
+                                            @* <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="far fa-heart"></i></a>
+                                        <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="far fa-exchange-alt"></i></a> *@
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- Detail Info -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-10 m-auto entry-main-content">
+                            <h3 class="section-title style-1 mb-30">Mô tả sản phẩm</h3>
+                            <div class="description mb-50">
+                                <p>
+                                    @Model.ProductDescription
+                                </p>
+                            </div>
+                            <h3 class="section-title style-1 mb-30">Thông tin sản phẩm</h3>
+                            <table class="font-md mb-30">
+                                <tbody>
+                                    @foreach (var info in attributes)
+                                    {
+                                        <tr class="stand-up">
+                                            <th>@info.AttributeName</th>
+                                            <td>
+                                                <p>@info.AttributeValue</p>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <div class="single-social-share clearfix mt-50 mb-15">
+                                <p class="mb-15 mt-30 font-sm"> <i class="fa fa-share-alt mr-5"></i> Chia sẻ</p>
+                                <div class="mobile-social-icon wow fadeIn  mb-sm-5 mb-md-0 animated">
+                                    <a class="facebook" href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a class="twitter" href="#"><i class="fab fa-twitter"></i></a>
+                                    <a class="tumblr" href="#"><i class="fab fa-tumblr"></i></a>
+                                    <a class="instagram" href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
+                            </div>
+                            <a class="mail-to-friend font-sm color-grey" href="#">
+                                <i class="far fa-envelope"></i> Chia sẻ qua Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script>
+        // Tạo URL cho hành động Search1 trên máy chủ
+        var searchUrl = '@Url.Action("Search1", "Home")';
+        // Hàm xử lý khi form được submit
+        function handleSubmit() {
+            var searchValue = document.getElementById('SearchValue').value;
+            var supplierID = document.getElementById('SupplierID').value;
+            // Tạo URL với các tham số
+            var url = `${searchUrl}?page=1&pageSize=32&searchValue=${encodeURIComponent(searchValue)}&categoryID=0&supplierID=${encodeURIComponent(supplierID)}&minPrice=0&maxPrice=0`;
+            // Chuyển hướng đến URL
+            window.location.href = url;
+            // Ngăn form thực hiện hành động submit mặc định
+            return false;
+        }
+        // Hàm hiển thị giỏ hàng nhỏ
+        function showShoppingCart() {
+            $.get('/Shop/MiniCart', function(data) {
+                $('#shoppingCart').html(data);
+            });
+            // Cập nhật số lượng
+            $.get('/Shop/GetCartCount', function(count) {
+                $('#cartCount').text(count);
+            });
+        }
+        $(document).ready(function() {
+            // Load nội dung MiniCart khi di chuột qua biểu tượng giỏ hàng
+            $('#cart-wrapper').hover(
+                function() {
+                    $.get('/Shop/MiniCart', function(data) {
+                        $('#shoppingCart').html(data);
+                        $('#shoppingCart').show();
+                    });
+                },
+                function() {
+                    // Ẩn giỏ hàng khi chuột rời khỏi
+                    $('#shoppingCart').hide();
+                }
+            );
+            // Xử lý sự kiện submit của form thêm vào giỏ hàng
+            $('.frmAddToCart').submit(function(e) {
+                e.preventDefault();
+                var url = $(this).prop('action');
+                var method = $(this).prop('method');
+                var data = $(this).serializeArray();
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: data,
+                    success: function(result) {
+                        if (result !== "") {
+                            alert(result);
+                        } else {
+                            showShoppingCart();
+                        }
+                    }
+                });
+            });
+            // Giảm số lượng
+            $('.qty-down').click(function(e) {
+                e.preventDefault();
+                const $parent = $(this).closest('.detail-qty');
+                let quantity = parseInt($parent.find('.qty-val').text());
+
+                if (quantity > 1) {
+                    quantity--; // Giảm giá trị
+                    updateQuantity($parent, quantity); // Cập nhật qty-val và input[name="Quantity"]
+                }
+            });
+            // Tăng số lượng
+            $('.qty-up').click(function(e) {
+                e.preventDefault();
+                const $parent = $(this).closest('.detail-qty');
+                let quantity = parseInt($parent.find('.qty-val').text());
+                quantity++; // Tăng giá trị
+                updateQuantity($parent, quantity); // Cập nhật qty-val và input[name="Quantity"]
+            });
+
+            // Hàm cập nhật qty-val và input[name="Quantity"]
+            function updateQuantity($parent, quantity) {
+                $parent.find('.qty-val').text(quantity); // Cập nhật số lượng trong qty-val
+                $parent.find('input[name="Quantity"]').val(quantity); // Gán giá trị cho input hidden
+            }
+        });
+    </script>
+    <script src="~/wowy-frontend/assets/js/shop.js"></script>
+}
+

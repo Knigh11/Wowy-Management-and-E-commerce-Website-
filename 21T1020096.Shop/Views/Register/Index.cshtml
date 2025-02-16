@@ -1,0 +1,127 @@
+﻿@model SV21T1020096.DomainModels.RegisterCustomer
+@{
+}
+<style>
+    .field-validation-error {
+        color: #dc3545;
+        font-size: 80%;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+</style>
+<div class="page-header breadcrumb-wrap">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html" rel="nofollow">Trang chủ</a>
+            <span></span> Trang
+            <span></span> Đăng kí
+        </div>
+    </div>
+</div>
+<section class="pt-150 pb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 m-auto">
+                <div class="row">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-8">
+                        <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
+                            <div class="padding_eight_all bg-white">
+                                <div class="heading_s1 d-flex justify-content-sm-center">
+                                    <h3 class="mb-30">Đăng kí tài khoản</h3>
+                                </div>
+                                <p class="mb-50 font-sm">
+                                    Dữ liệu cá nhân của bạn sẽ được sử dụng để hỗ trợ trải nghiệm của bạn trên toàn bộ trang web này, để quản lý quyền truy cập vào tài khoản của bạn và cho các mục đích khác được mô tả trong chính sách bảo mật của chúng tôi
+                                </p>
+                                <form method="POST" action="~/Register/Register">
+                                    <input type="hidden" name="@nameof(Model.CustomerID)" value="@Model.CustomerID" />
+                                    <input type="hidden" name="@nameof(Model.IsLocked)" value="false" />
+                                    <div class="row form-group">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <input type="text" required name="@nameof(Model.CustomerName)" value="@Model.CustomerName" placeholder="Họ tên">
+                                                @Html.ValidationMessageFor(m => m.CustomerName)
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input type="text" required name="@nameof(Model.ContactName)" value="@Model.ContactName" placeholder="Tên giao dịch">
+                                                @Html.ValidationMessageFor(m => m.ContactName)
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input type="text" required name="@nameof(Model.Phone)" value="@Model.Phone" placeholder="Điện thoại">
+                                                @Html.ValidationMessageFor(m => m.Phone)
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input type="email" required name="@nameof(Model.Email)" value="@Model.Email" placeholder="Email">
+                                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <select class="select-box select2 pl-10" style="border-radius:40px; border: solid 1px; height:45px;" name="@nameof(Model.Province)">
+                                                    <option value="">--Chọn tỉnh thành bạn sống--</option>
+                                                    @foreach (var province in SV21T1020096.BusinessLayers.CommonDataService.ListOfProvinces())
+                                                    {
+                                                        if (province.ProvinceName == Model.Province)
+                                                        {
+                                                            <option value="@province.ProvinceName" selected>
+                                                                @province.ProvinceName
+                                                            </option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@province.ProvinceName">
+                                                                @province.ProvinceName
+                                                            </option>
+                                                        }
+                                                    }
+                                                </select>
+                                                @Html.ValidationMessageFor(m => m.Province)
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" required name="@nameof(Model.Address)" value="@Model.Address" placeholder="Địa chỉ">
+                                                @Html.ValidationMessageFor(m => m.Address)
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input required type="password" name="@nameof(Model.PassWord)" value="@Model.PassWord" placeholder="Mật khẩu">
+                                                @Html.ValidationMessageFor(m => m.PassWord)
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input required type="password" name="@nameof(Model.ConfirmPass)" value="@Model.ConfirmPass" placeholder="Nhập lại mật khẩu">
+                                                @Html.ValidationMessageFor(m => m.ConfirmPass)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-cols-1">
+                                        @Html.ValidationMessage("Error")
+                                    </div>
+                                    <div class="row-cols-1">
+                                        @Html.ValidationMessage("Success")
+                                    </div>
+                                    <div class="form-group d-flex justify-content-center">
+                                        <button type="submit" class="btn btn-fill-out btn-block hover-up">Đâng ký</button>
+                                    </div>
+                                </form>
+                                <div class="divider-text-center mt-15 mb-15">
+                                    <span> or</span>
+                                </div>
+                                <ul class="btn-login list_none text-center mb-15">
+                                    <li><a href="#" class="btn btn-facebook hover-up"><i class="fab fa-facebook-f mr-10"></i>Facebook</a></li>
+                                    <li><a href="#" class="btn btn-google hover-up"><i class="fab fa-google mr-10"></i>Google</a></li>
+                                </ul>
+                                <div class="text-muted text-center">Bạn đã có tài khoản? <a href="~/Account/Login">Đăng nhập ngay</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

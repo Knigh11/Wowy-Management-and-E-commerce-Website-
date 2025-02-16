@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\SV21T`010096.Web.props" />
+</Project>

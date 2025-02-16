@@ -1,0 +1,148 @@
+﻿@model ProductSearchInput
+@using SV21T1020096.BusinessLayers
+@{
+    Layout = null;
+    var user = User.GetUserData();
+}
+<div class="mobile-header-active mobile-header-wrapper-style">
+    <div class="mobile-header-wrapper-inner">
+        <div class="mobile-header-top">
+            <div class="mobile-header-logo">
+                <a href="~/Home/Index"><img src="~/wowy-frontend/assets/imgs/theme/logo-default.png" alt="logo"></a>
+            </div>
+            <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
+                <button class="close-style search-close">
+                    <i class="icon-top"></i>
+                    <i class="icon-bottom"></i>
+                </button>
+            </div>
+        </div>
+        <div class="mobile-header-content-area">
+            <div class="mobile-search search-style-3 mobile-header-border">
+                <form action="~/Home/Search" method="get" onsubmit="removeSeparators()" id="frmSearchInput_Mobile">
+                    <input type="hidden" name="@nameof(Model.PageSize)" value="@Model.PageSize" />
+                    <input type="hidden" name="@nameof(Model.CategoryID)" value="@(Model.CategoryID)" />
+                    <input type="hidden" name="@nameof(Model.SupplierID)" value="@(Model.SupplierID)" />
+                    <input type="hidden" class="form-control" name="@nameof(Model.MinPrice)"
+                           value="@Model.MinPrice.ToString("N0")">
+                    <input type="hidden" class="form-control" name="@nameof(Model.MaxPrice)"
+                           value="@Model.MaxPrice.ToString("N0")">
+                    <input name="@nameof(Model.SearchValue)" type="text" placeholder="Nhập mặt hàng hàng cần tìm" autofocus="" value="@Model.SearchValue">
+                    <button type="submit"> <i class="far fa-search"></i> </button>
+                </form>
+            </div>
+            <div class="mobile-menu-wrap mobile-header-border">
+                <div class="main-categori-wrap mobile-header-border">
+                    <a class="categori-button-active-2" href="#">
+                        <span class="far fa-bars"></span> Tìm theo nhà cung cấp <i class="down far fa-chevron-down"></i>
+                    </a>
+                    <div class="categori-dropdown-wrap categori-dropdown-active-small">
+                        <ul>
+                            <li>
+                                <a href="@Url.Action("Search1", "Home", new {page = Model.Page, pageSize = Model.PageSize, searchValue = Model.SearchValue, categoryID = Model.CategoryID, supplierID = 0, minPrice = Model.MinPrice, maxPrice = Model.MaxPrice})">
+                                    Tất cả nhà cung cấp
+                                </a>
+                            </li>
+                            <li>
+                                @foreach (var item in CommonDataService.ListSuppliers())
+                                {
+                                    if (Model.SupplierID == item.SupplierID)
+                                    {
+                                        <a href="#" style="color:orange">
+                                            @item.SupplierName
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Search1", "Home", new {page = Model.Page, pageSize = Model.PageSize, searchValue = Model.SearchValue, categoryID = Model.CategoryID, supplierID = item.SupplierID, minPrice = Model.MinPrice, maxPrice = Model.MaxPrice})">
+                                            @item.SupplierName
+                                        </a>
+                                    }
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- bắt đầu menu di động -->
+                <nav>
+                    <ul class="mobile-menu">
+                        <li class="menu-item-has-children">
+                            <span class="menu-expand"></span><a href="~/Home/Index">Trang chủ</a>
+                            @* <ul class="dropdown">
+                                <li><a href="index.html">trang chủ 1</a></li>
+                                <li><a href="index-2.html">trang chủ 2</a></li>
+                                <li><a href="index-3.html">trang chủ 3</a></li>
+                                <li><a href="index-4.html">trang chủ 4</a></li>
+                            </ul> *@
+                        </li>
+                        <li class="menu-item-has-children">
+                            <span class="menu-expand"></span><a href="#">Cửa hàng</a>
+                            <ul class="dropdown">
+                                <li><a href="~/Shop/ShoppingCart">Cửa hàng – Giỏ hàng</a></li>
+                                <li><a href="~/Shop/Checkout">Cửa hàng –Thanh toán</a></li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children">
+                            <span class="menu-expand"></span><a href="#">Trang</a>
+                            <ul class="dropdown">
+                                <li><a href="#">Giới thiệu về chúng tôi</a></li>
+                                <li><a href="#">Liên hệ</a></li>
+                                @if (user != null)
+                                {
+                                    <li><a href="~/Account_Inf/Index/@user.UserID">Tài khoản của tôi</a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="~/Account/Login">Đăng nhập/Đăng ký</a></li>
+                                }
+                                <li><a href="#">Hướng dẫn mua hàng</a></li>
+                                <li><a href="#">Chính sách bảo mật</a></li>
+                                <li><a href="#">Điều khoản dịch vụ</a></li>
+                            </ul>
+                        </li>
+                        <li class="menu-item-has-children">
+                            <span class=" menu-expand"></span><a href="#"> Liên hệ</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mobile-header-info-wrap mobile-header-border">
+                <div class="single-mobile-header-info">
+                    <a class="mobile-language-active" href="#">
+                        Tiếng Việt<span>
+                            <i class="far fa-angle-down"></i>
+                        </span>
+                    </a>
+                    <div class="lang-curr-dropdown lang-dropdown-active">
+                        <ul>
+                            <li><a href="#">English</a></li>
+                            <li><a href="#">French</a></li>
+                            <li><a href="#">German</a></li>
+                            <li><a href="#">Spanish</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="single-mobile-header-info mt-30">
+                    <a target="_blank" href="#"> Vị trí của chúng tôi</a>
+                </div>
+                <div class="single-mobile-header-info">
+                    @if(user ==null){
+                        <a href="~/Account/Login">Đăng nhập/Đăng kí</a>
+                    }
+                    else{
+                        <a href="~/Account/Logout">Đăng xuất</a>
+                    }
+                </div>
+                <div class="single-mobile-header-info">
+                    <span>Hotline: </span><a href="#">0345084420</a>
+                </div>
+            </div>
+            <div class="mobile-social-icon">
+                <a class="facebook" href="https://www.facebook.com/que.nguyet.dan"><i class="fab fa-facebook-f"></i></a>
+                <a class="twitter" href="#"><i class="fab fa-twitter"></i></a>
+                <a class="tumblr" href="#"><i class="fab fa-tumblr"></i></a>
+                <a class="instagram" href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</div>

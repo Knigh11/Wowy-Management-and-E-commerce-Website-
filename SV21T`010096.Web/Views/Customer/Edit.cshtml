@@ -1,0 +1,68 @@
+﻿@model SV21T1020096.DomainModels.Customer
+@{
+    ViewBag.Title = ViewBag.Title;
+}
+<div class="box box-primary">
+    <div class="box-body">
+        <form action="~/Customer/Save" method="post">
+            <input type="hidden" name="@nameof(Model.CustomerID)" value="@Model.CustomerID" />
+            <div class="form-group">
+                <label for="">Tên khách hàng:</label>
+                <input type="text" class="form-control" name="@nameof(Model.CustomerName)" id="" value="@Model.CustomerName">
+                @Html.ValidationMessage(nameof(Model.CustomerName))
+            </div>
+            <div class="form-group">
+                <label for="">Tên giao dịch:</label>
+                <input type="text" class="form-control" name="@nameof(Model.ContactName)" id="" value="@Model.ContactName">
+                @Html.ValidationMessage(nameof(Model.ContactName))
+            </div>
+            <div class="form-group">
+                <label for="">Điện thoại:</label>
+                <input type="text" class="form-control" name="@nameof(Model.Phone)" id="" value="@Model.Phone">
+                @Html.ValidationMessage(nameof(Model.Phone))
+            </div>
+            <div class="form-group">
+                <label for="">Email:</label>
+                <input type="email" class="form-control" name="@nameof(Model.Email)" id="" value="@Model.Email">
+                @Html.ValidationMessage(nameof(Model.Email))
+            </div>
+            <div class="form-group">
+                <label for="">Địa chỉ:</label>
+                <input type="text" class="form-control" name="@nameof(Model.Address)" id="" value="@Model.Address">
+                @Html.ValidationMessage(nameof(Model.Address))
+            </div>
+            <div class="form-group">
+                <label for="">Tỉnh thành:</label>
+                <select class="form-control" name="@nameof(Model.Province)">
+                    <option value="">--Chọn tỉnh thành--</option>
+                    @foreach (var province in SV21T1020096.BusinessLayers.CommonDataService.ListOfProvinces())
+                    {
+                        if(province.ProvinceName == Model.Province)
+                        {
+                            <option value="@province.ProvinceName" selected>
+                                @province.ProvinceName
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@province.ProvinceName">
+                                @province.ProvinceName
+                            </option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessage(nameof(Model.Province))
+            </div>
+            <div class="checkbox">
+                <label><input name="@nameof(Model.IsLocked)" value="true" type="checkbox" @(Model.IsLocked != true ? "" : "checked")> Tài khoảng đang bị khoá</label>
+            </div>
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-floppy-o"></i>lưu dữ liệu
+                </button>
+                <a href="~/Customer" class="btn btn-default">Quay lại</a>
+            </div>
+            @Html.ValidationMessage("Error");
+        </form>
+    </div>
+</div>

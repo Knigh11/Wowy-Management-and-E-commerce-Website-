@@ -1,0 +1,203 @@
+﻿@model SV21T1020096.Shop.Models.ProductSearchInput
+@using SV21T1020096.BusinessLayers
+@using SV21T1020096.Shop.Models
+@{
+    var user = User.GetUserData();
+}
+@await Html.PartialAsync("MobileNav", Model)
+<div class="header-middle header-middle-ptb-1 d-none d-lg-block">
+    <div class="container">
+        <div class="header-wrap header-space-between">
+            <div class="logo logo-width-1">
+                <a href="~/Home"><img src="~/wowy-frontend/assets/imgs/theme/logo-default.png" alt="logo"></a>
+            </div>
+            <div class="search-style-2">
+                <form id="frmSearchInput" action="~/Home/Search" method="get" onsubmit="removeSeparators()">
+                    <input type="hidden" name="@nameof(Model.PageSize)" value="@Model.PageSize" />
+                    @* <select class="select-active" name="@nameof(Model.CategoryID)">
+                        <option value="">Tất cả loại hàng</option>
+                        @foreach (var category in SV21T1020096.BusinessLayers.CommonDataService.ListCategories())
+                        {
+                            if (category.CategoryID == Model.CategoryID)
+                            {
+                                <option value="@category.CategoryID" selected>
+                                    @category.CategoryName
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@category.CategoryID">
+                                    @category.CategoryName
+                                </option>
+                            }
+                        }
+                    </select> *@
+                    <select class="select-active" name="@nameof(Model.SupplierID)">
+                        <option value="">Tất cả nhà cung cấp</option>
+                        @foreach (var supplier in CommonDataService.ListSuppliers())
+                        {
+                            if (supplier.SupplierID == Model.SupplierID)
+                            {
+                                <option value="@supplier.SupplierID" selected>
+                                    @supplier.SupplierName
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@supplier.SupplierID">
+                                    @supplier.SupplierName
+                                </option>
+                            }
+                        }
+                    </select>
+                    <input type="hidden" name="@nameof(Model.CategoryID)" value="@(Model.CategoryID)" />
+                    <input type="hidden" class="form-control" name="@nameof(Model.MinPrice)"
+                           value="@Model.MinPrice.ToString("N0")">
+                    <input type="hidden" class="form-control" name="@nameof(Model.MaxPrice)"
+                           value="@Model.MaxPrice.ToString("N0")">
+                    <input name="@nameof(Model.SearchValue)" type="text" class="form-control" placeholder="Nhập mặt hàng hàng cần tìm" autofocus="" value="@Model.SearchValue">
+                    <button type="submit"> <i class="far fa-search"></i> </button>
+                </form>
+            </div>
+            <div class="header-action-right">
+                <div class="header-action-2">
+                    <div class="header-action-icon-2" id="cart-wrapper">
+                        @if (user != null)
+                        {
+                            @* <a class="mini-cart-icon" href="~/Shop/ShoppingCart">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-cart.svg">
+                                <span class="pro-count blue">@ViewBag.CountProduct</span>
+                            </a>
+                            <div id="shoppingCart" class="cart-dropdown-wrap cart-dropdown-hm2">
+                            </div> *@
+                            <a class="mini-cart-icon" href="~/Shop/ShoppingCart">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-cart.svg">
+                                <span class="pro-count blue" id="cartCount">
+                                    @ViewBag.CountProduct
+                                </span>
+                            </a>
+                            <div id="shoppingCart"></div>
+
+                        }
+                        else
+                        {
+                            <a class="mini-cart-icon" href="~/Shop/ShoppingCart">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-cart.svg">
+                            </a>
+                        }
+                    </div>
+                    <div class="header-action-icon-2">
+                        @if (user == null)
+                        {
+                            <a href="~/Account/Login">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-user.svg">
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="~/Account_Inf/Index">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-user.svg">
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="">
+</div>
+<div id="searchResult">
+</div>
+
+@section Scripts {
+    <script>
+        function doSearch(page) {
+            var searchCondition = $("#frmSearchInput").serialize() + '&page=' + page;
+            var action = $("#frmSearchInput").prop("action");
+            var method = $("#frmSearchInput").prop("method");
+            $.ajax({
+                url: action,    
+                type: method,
+                data: searchCondition,
+                success: function (data) {
+                    $("#searchResult").html(data);
+                }
+            });
+        }
+        function doSearch_Mobile(page) {
+            var searchCondition = $("#frmSearchInput_Mobile").serialize() + '&page=' + page;
+            var action = $("#frmSearchInput_Mobile").prop("action");
+            var method = $("#frmSearchInput_Mobile").prop("method");
+            $.ajax({
+                url: action,
+                type: method,
+                data: searchCondition,
+                success: function (data) {
+                    $("#searchResult").html(data);
+                }
+            });
+        }
+        function showShoppingCart() {
+            $.get('/Home/MiniCart', function(data) {
+                $('#shoppingCart').html(data);
+            });
+        // Cập nhật số lượng
+            $.get('/Home/GetCartCount', function(count) {
+                $('#cartCount').text(count);
+            });
+        }
+        $(document).ready(function () {
+            if ($("#frmSearchInput").length && $("#searchResult").length) {
+                doSearch(@Model.Page);
+                $("#frmSearchInput").submit(function (e) {
+                    e.preventDefault();
+                    doSearch(1);
+                });
+            }
+            if ($("#frmSearchInput_Mobile").length && $("#searchResult").length) {
+                    doSearch_Mobile(@Model.Page);
+                    $("#frmSearchInput_Mobile").submit(function (e) {
+                        e.preventDefault();
+                        doSearch_Mobile(1);
+                    });
+                }
+
+
+        });
+        $(document).ready(function() {
+            // Load MiniCart content when hovering over the cart icon
+                    $('#cart-wrapper').hover(function() {
+                        $.get('/Home/MiniCart', function(data) {
+                            $('#shoppingCart').html(data);
+                            $('#shoppingCart').show();
+                        });
+                    }, function() {
+                        // Hide the cart when mouse leaves
+                        $('#shoppingCart').hide();
+                    });
+                });
+        function formatNumber(input) {
+            //Lấy giá trị số hiện tại và xóa tất cả dấu không phải số
+            let value = input.value.replace(/\D/g, "");
+
+            //Định dạng lại số với dấu chấm (.) ngăn cách hàng nghìn
+            input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function removeSeparators() {
+            //Lấy các trường cần xử lý
+            let minPriceInput = document.querySelector('input[name="@nameof(Model.MinPrice)"]');
+            let maxPriceInput = document.querySelector('input[name="@nameof(Model.MaxPrice)"]');
+
+            //Loại bỏ dấu chấm trước khi gửi
+            minPriceInput.value = minPriceInput.value.replace(/\./g, "");
+            maxPriceInput.value = maxPriceInput.value.replace(/\./g, "");
+        }
+
+    </script>
+
+}
+
+
+

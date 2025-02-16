@@ -1,0 +1,66 @@
+﻿@model SV21T1020096.DomainModels.Supplier
+@{
+    ViewBag.Title = ViewBag.Title;
+}
+<div class="box box-primary">
+    <div class="box-body">
+        <form action="~/Supplier/Save" method="post">
+            <input type="hidden" name="@nameof(Model.SupplierID)" value="@Model.SupplierID" />
+            <div class="form-group">
+                <label for="">Tên nhà cung cấp:</label>
+                <input type="text" class="form-control" id="" name="@nameof(Model.SupplierName)" value="@Model.SupplierName">
+                @Html.ValidationMessage(nameof(Model.SupplierName))
+            </div>
+            <div class="form-group">
+                <label for="">Tên giao dịch:</label>
+                <input type="text" class="form-control" id="" name="@nameof(Model.ContactName)" value="@Model.ContactName">
+                @Html.ValidationMessage(nameof(Model.ContactName))
+            </div>
+            <div class="form-group">
+                <label for="">Điện thoại:</label>
+                <input type="text" class="form-control" id="" name="@nameof(Model.Phone)" value="@Model.Phone">
+                @Html.ValidationMessage(nameof(Model.Phone))
+            </div>
+            <div class="form-group">
+                <label for="">Email:</label>
+                <input type="email" class="form-control" id="" name="@nameof(Model.Email)" value="@Model.Email">
+                @Html.ValidationMessage(nameof(Model.Email))
+            </div>
+            <div class="form-group">
+                <label for="">Tỉnh thành:</label>
+                <select class="form-control" name="@nameof(Model.Province)">
+                    <option value="">--Chọn tỉnh thành--</option>
+                    @foreach (var province in SV21T1020096.BusinessLayers.CommonDataService.ListOfProvinces())
+                    {
+                        if (province.ProvinceName == Model.Province)
+                        {
+                            <option value="@province.ProvinceName" selected>
+                                @province.ProvinceName
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@province.ProvinceName">
+                                @province.ProvinceName
+                            </option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessage(nameof(Model.Province))
+            </div>
+            <div class="form-group">
+                <label for="">Địa chỉ:</label>
+                <input type="text" class="form-control" id="" name="@nameof(Model.Address)" value="@Model.Address">
+                @Html.ValidationMessage(nameof(Model.Address))
+            </div>
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-floppy-o"></i>lưu dữ liệu
+                </button>
+                <a href="~/Supplier" class="btn btn-default">Quay lại</a>
+            </div>
+            @Html.ValidationMessage("Error")
+        </form>
+    </div>
+</div>
+

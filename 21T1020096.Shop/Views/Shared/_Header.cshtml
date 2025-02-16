@@ -1,0 +1,163 @@
+﻿@using SV21T1020096.Shop.Models
+@inject ShoppingCartService HeaderService
+@{
+    var user = User.GetUserData();
+}
+<header class="header-area header-height-0">
+    <div class="header-top header-top-ptb-1 d-none d-lg-block">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xl-3 col-lg-4">
+                    <div class="header-info">
+                        <ul>
+                            <li><a href="#">0345084420</a></li>
+                            <li>
+                                <i class="fa fa-map-marker-alt mr-5"></i><a target="_blank"
+                                                                            href="page-location.html">Địa chỉ của chúng tôi</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-4">
+                    <div class="text-center">
+                        <div id="news-flash" class="d-inline-block">
+                            <ul>
+                                <li>
+                                    <i class="fa fa-angle-double-right mr-5"></i> Nhận các thiết bị tuyệt vời giảm giá đến 50%
+                                    <a class="active" href="shop-grid-right.html">Xem chi tiết</a>
+                                </li>
+                                <li>
+                                    <i class="fa fa-asterisk mr-5"></i><b class="text-danger">Ưu đãi đặc biệt</b>
+                                    - Tiết kiệm hơn với mã giảm giá
+                                </li>
+                                <li>
+                                    <i class="fa fa-bell mr-5"></i> <b class="text-success">Trang sức bạc thịnh hành 25</b>, tiết kiệm đến 35% hôm nay <a href="shop-grid-right.html">Mua ngay</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4">
+                    <div class="header-info header-info-right">
+                        <ul>
+                            <li>
+                                <a class="language-dropdown-active" href="#">
+                                    <i class="fa fa-globe-americas"></i>
+                                    Tiếng Việt <i class="fa fa-chevron-down"></i>
+                                </a>
+                                <ul class="language-dropdown">
+                                    <li><a href="#">Tiếng Pháp</a></li>
+                                    <li><a href="#">Tiếng Anh</a></li>
+                                    <li><a href="#">Tiếng nói của trái tim</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                @{
+                                    if (user == null)
+                                    {
+                                        <a href="~/Account/Login">Đăng nhập</a>
+                                        <span> / </span>
+                                        <a href="~/Register">Đăng kí</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="~/Account/Logout">Đăng xuất</a>
+                                    }
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-bottom header-bottom-bg-color sticky-bar gray-bg sticky-blue-bg">
+        <div class="container">
+            <div class="header-wrap header-space-between position-relative">
+                <div class="logo logo-width-1 d-block d-lg-none">
+                    <a href="~/Home/Index"><img src="~/wowy-frontend/assets/imgs/theme/logo-white.png" alt="logo"></a>
+                </div>
+                <div class="main-categori-wrap d-none d-lg-block">
+                </div>
+                <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block main-menu-light-white hover-boder hover-boder-white">
+                    <nav>
+                        <ul>
+                            <li>
+                                <a class="" href="~/Home">Trang chủ</a>
+                            </li>
+                            <li>
+                                <a href="page-about.html">Giới thiệu</a>
+                            </li>
+                            <li>
+                                <a href="~/Home">Cửa hàng <i class="fa fa-chevron-down"></i></a>
+                                <ul class="sub-menu">
+                                    <li><a href="~/Shop/ShoppingCart">Cửa hàng – Giỏ hàng</a></li>
+                                    <li><a href="~/Shop/Checkout">Cửa hàng –Thanh toán</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Trang <i class="fa fa-chevron-down"></i></a>
+                                <ul class="sub-menu">
+                                    <li><a href="~/Page/About">Giới thiệu về chúng tôi</a></li>
+                                    <li><a href="page-contact.html">Liên hệ</a></li>
+                                    @if (user != null)
+                                    {
+                                        <li><a href="~/Account_Inf/Index/@user.UserID">Tài khoản của tôi</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="~/Account/Login">Đăng nhập/Đăng ký</a></li>
+                                    }
+                                    <li><a href="page-purchase-guide.html">Hướng dẫn mua hàng</a></li>
+                                    <li><a href="page-privacy-policy.html">Chính sách bảo mật</a></li>
+                                    <li><a href="page-terms.html">Điều khoản dịch vụ</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="page-contact.html">Liên hệ</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="hotline d-none d-lg-block">
+                    <p><i class="fa fa-phone-alt"></i><span>Hotline</span> 0345084420 </p>
+                </div>
+                <div class="header-action-right d-block d-lg-none">
+                    <div class="header-action-2">
+                        <div class="header-action-icon-2">
+                            <a class="mini-cart-icon" href="~/Shop/ShoppingCart">
+                                <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-cart-white.svg">
+                            </a>
+                        </div>
+                        <div class="header-action-icon-2">
+                            @{
+                                if (user != null)
+                                {
+                                    <a href="~/Account_Inf/Index/@user.UserID">
+                                        <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-user-white.svg">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="~/Account/Login">
+                                        <img alt="wowy" src="~/wowy-frontend/assets/imgs/theme/icons/icon-user-white.svg">
+                                    </a>
+                                }
+                            }
+                        </div> 
+                        <div class="header-action-icon-2">
+                            <div class="burger-icon burger-icon-white">
+                                <span class="burger-icon-top"></span>
+                                <span class="burger-icon-mid"></span>
+                                <span class="burger-icon-bottom"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+

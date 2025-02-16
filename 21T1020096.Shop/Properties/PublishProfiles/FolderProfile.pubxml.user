@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>F:\WowyShop</_PublishTargetUrl>
+    <History>True|2025-01-27T11:03:35.2646493Z||;True|2025-01-27T15:32:24.2849698+07:00||;True|2025-01-23T10:25:12.8796608+07:00||;</History>
+    <LastFailureDetails />
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="LiteCommerceDB">
+      <Value>server=litecommercedb.cdcok8gqcciz.ap-southeast-1.rds.amazonaws.com%3buser id=admin%3bpassword=12345678%3bdatabase=LiteCommerceDB%3bTrustServerCertificate=true%3bMultipleActiveResultSets=true%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

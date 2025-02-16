@@ -1,0 +1,293 @@
+﻿@model SV21T1020096.Shop.Models.ProductSearchResult
+@using SV21T1020096.BusinessLayers
+@using SV21T1020096.DomainModels
+@using System.Linq;
+@using System.Web
+@{
+    Layout = null;
+    List<Category> listCate = CommonDataService.ListCategories();
+    var cateName = listCate.FirstOrDefault<Category>(c => c.CategoryID == Model.CategoryID);
+    var suppName = CommonDataService.ListSuppliers().FirstOrDefault<Supplier>(c => c.SupplierID == Model.SupplierID);
+}
+<div class="page-header breadcrumb-wrap">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="~/Home/Index" rel="nofollow">Trang chủ</a>
+            <span></span> @cateName?.CategoryName
+            <span></span> @suppName?.SupplierName
+        </div>
+    </div>
+</div>
+<section class="mt-60 mb-60">
+    <div class="container">
+        <div class="col-lg-12">
+            <div class="row flex-row-reverse">
+                <div class="col-lg-10">
+                    <div class="shop-product-fillter">
+                        <div class="totall-product">
+                            <p> Chúng tôi tìm thấy <strong class="text-brand">@Model.RowCount</strong> mặt hàng trong tổng số <strong class="text-brand">@Model.PageCount</strong> trang dành cho bạn</p>
+                        </div>
+                    </div>
+                    <div class="tab-content wow fadeIn animated" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tab-one" role="tabpanel"
+                        aria-labelledby="tab-one">
+                            <div class="row product-grid-4">
+                                @foreach (var product in Model.Data)
+                                {
+                                    if (!product.IsSelling) continue;
+                                    <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+                                        <form class="frmAddToCart" action="~/Home/AddToCart" method="post">
+                                            <input type="hidden" name="ProductID" value="@product.ProductID" />
+                                            <input type="hidden" name="ProductName" value="@product.ProductName" />
+                                            <input type="hidden" name="Photo" value="@product.Photo" />
+                                            <input type="hidden" name="Unit" value="@product.Unit" />
+                                            <input type="hidden" name="SalePrice" value="@product.Price" />
+                                            <input type="hidden" name="Quantity" value="1" />
+                                            <div class="product-cart-wrap mb-30">
+                                                <div class="product-img-action-wrap">
+                                                    <div class="product-img product-img-zoom">
+                                                        @{
+                                                            if (product.Photo != "")
+                                                            {
+                                                                <a href="~/Shop/ProductView/@product.ProductID">
+                                                                    <img class="default-img" src="@product.Photo"
+                                                                         alt="">
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a href="~/Shop/ProductView/@product.ProductID">
+                                                                    <img class="default-img" src="~/wowy-frontend/assets/imgs/shop/product-1-2.jpg" alt="">
+                                                                    <img class="hover-img" src="~/wowy-frontend/assets/imgs/shop/product-1-3.jpg" alt="">
+                                                                </a>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <div class="product-action-1">
+                                                        <a href="~/Shop/ProductView/@product.ProductID" aria-label="Xem sản phẩm" class="action-btn hover-up">
+                                                            <i class="far fa-search"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="product-badges product-badges-position product-badges-mrg">
+                                                    </div>
+                                                </div>
+                                                <div class="product-content-wrap">
+                                                    <div class="product-category">
+                                                        @foreach (var cateList in listCate)
+                                                        {
+                                                            if (product.CategoryID == cateList.CategoryID)
+                                                            {
+                                                                <span>@cateList.CategoryName</span>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <h2><a href="shop-product-right.html">@product.ProductName</a></h2>
+                                                    <div class="rating-result" title="90%">
+                                                    </div>
+                                                    <div class="product-price">
+
+                                                        <span>@String.Format("{0:N0}", product.Price)</span>
+                                                        <span></span>
+                                                    </div>
+                                                    <div class="product-action-1 show">
+                                                        @if (User.GetUserData() != null)
+                                                        {
+                                                            <button type="submit" aria-label="Thêm vào giỏ" class="action-btn hover-up d-flex justify-content-center" style="width:45px; padding: 12px 25px">
+                                                                <i class="far fa-shopping-bag"></i>
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a aria-label="Thêm vào giỏ" class="action-btn hover-up"
+                                                               href="~/Account/Login"><i class="far fa-shopping-bag"></i></a>
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <!--End tab-content-->
+                    <!--pagination-->
+                    <div class="pagination-area mt-15 mb-15 mb-lg-0">
+                        <nav aria-label="Page navigation">
+                            @* <ul class="pagination justify-content-start">
+                                @for (int p = 1; p <= Model.PageCount; p++)
+                                {
+                                    if (p == Model.Page)
+                                    {
+                                        <li class="page-item active"><a class="page-link" href="">@p</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li class="page-item"><a class="page-link" href="javascript:;" onclick="doSearch(@p)">@p</a></li>
+                                    }
+                                }
+                            </ul> *@
+                            <ul class="pagination justify-content-center" id="pagination">
+                                <!-- Pagination items sẽ được tạo động ở đây -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-lg-2 primary-sidebar sticky-sidebar">
+                    <div class="widget-area">
+                        <!--Widget categories-->
+                        <div class="sidebar-widget widget_categories mb-30 p-30 bg-grey border-radius-10">
+                            <div class="widget-header position-relative mb-20 pb-10">
+                                <h5 class="widget-title mb-10">Loại mặt hàng</h5>
+                                <div class="bt-1 border-color-1"></div>
+                            </div>
+                            <div class="">
+                                <ul class="categor-list">
+                                    <li class="cat-item text-muted">
+                                        <a href="@Url.Action("Search1", "Home", new {page = Model.Page, pageSize = Model.PageSize, searchValue = Model.SearchValue, categoryID = "", supplierID = Model.SupplierID, minPrice = Model.MinPrice, maxPrice = Model.MaxPrice})">
+                                            Tất cả loại hàng
+                                        </a>
+                                    </li>
+                                    @foreach (var cateItem in listCate)
+                                    {
+                                        if (Model.CategoryID == cateItem.CategoryID)
+                                        {
+                                            <li class="cat-item text-muted active">
+                                                <a href="" style="color:orange">
+                                                    @cateItem.CategoryName
+                                                </a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="cat-item text-muted">
+                                                <a href="@Url.Action("Search1", "Home", new {page = 1, pageSize = Model.PageSize, searchValue = Model.SearchValue, categoryID = cateItem.CategoryID, supplierID = Model.SupplierID, minPrice = Model.MinPrice, maxPrice = Model.MaxPrice})">
+                                                    @cateItem.CategoryName
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="sidebar-widget price_range range mb-30">
+                            <div class="widget-header position-relative mb-20 pb-10">
+                                <h5 class="widget-title mb-10">Lọc theo giá</h5>
+                                <div class="bt-1 border-color-1"></div>
+                            </div>
+                            <div class="price-filter">
+                                <div class="price-filter-inner">
+                                    <div class="price_slider_amount">
+                                        <div class="label-input">
+                                            <span>Giá từ</span><input style="border-radius: 5px; border: solid 0.5px;" class="pl-10 form-control" id="minPrice" type="text" name="@nameof(Model.MinPrice)" value="@(Model.MinPrice.ToString("N0"))" oninput="formatNumber(this)" />
+                                        </div>
+                                        <div class="label-input">
+                                            <span>Đến</span><input style="border-radius: 5px; border: solid 0.5px;" class="pl-10 form-control" id="maxPrice" type="text" name="@nameof(Model.MaxPrice)" value="@(Model.MaxPrice.ToString("N0"))" oninput="formatNumber(this)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" id="filterBtn" class="btn btn-sm btn-default mt-10">
+                                <i class="fa fa-filter mr-5 ml-0"></i>Lọc
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<script>
+        document.getElementById('filterBtn').addEventListener('click', function () {
+                 var minPrice = document.getElementById('minPrice').value;
+                 minPrice = minPrice.replace(/\./g, "");
+                 var maxPrice = document.getElementById('maxPrice').value;
+                 maxPrice = maxPrice.replace(/\./g, "");
+                 // Các tham số khác từ model (nếu cần)
+                 var searchValue = '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.SearchValue))';
+                 // Tạo URL với các tham số
+                 let url = `@Url.Action("Search1", "Home")?page=${1}&pageSize=${@Model.PageSize}&searchValue=${encodeURIComponent(searchValue)}&categoryID=${@Model.CategoryID}&supplierID=${@Model.SupplierID}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+
+                 // Chuyển hướng đến URL
+                 window.location.href = url;
+        });
+    function formatNumber(input) {
+        let value = input.value.replace(/\D/g, "");
+        input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    function renderPagination(currentPage, totalPages) {
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = ''; // Xóa nội dung cũ
+
+        if (totalPages <= 1) return; // Không cần pagination nếu chỉ có 1 trang
+
+        const createPageItem = (page, active = false, disabled = false, text = null) => {
+            const li = document.createElement('li');
+            li.className = `page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}`;
+            const link = document.createElement('a');
+            link.className = 'page-link';
+            link.href = 'javascript:;';
+            link.innerHTML = text || page;
+            if (!disabled && !active) {
+                link.addEventListener('click', () => doSearch(page));
+            }
+            li.appendChild(link);
+            return li;
+        };
+
+        // Hiển thị nút "Trang đầu tiên"
+        pagination.appendChild(createPageItem(1, currentPage === 1));
+
+        // Nếu currentPage > 3, thêm dấu "..."
+        if (currentPage > 3) {
+            pagination.appendChild(createPageItem(null, false, true, '...'));
+        }
+
+        // Hiển thị các trang xung quanh currentPage (trang hiện tại ± 1)
+        for (let p = Math.max(2, currentPage - 1); p <= Math.min(totalPages - 1, currentPage + 1); p++) {
+            pagination.appendChild(createPageItem(p, p === currentPage));
+        }
+
+        // Nếu currentPage < totalPages - 2, thêm dấu "..."
+        if (currentPage < totalPages - 2) {
+            pagination.appendChild(createPageItem(null, false, true, '...'));
+        }
+
+        // Hiển thị nút "Trang cuối"
+        pagination.appendChild(createPageItem(totalPages, currentPage === totalPages));
+    }
+    $(document).ready(function () {
+        $(".number-separator").inputmask({
+            alias: "numeric",
+            groupSeparator: ",",         // Dấu "," cho hàng nghìn
+            radixPoint: ".",             // Dấu "." cho thập phân
+            autoGroup: true,
+            digits: 2,                   // 2 chữ số thập phân
+            rightAlign: false,
+            removeMaskOnSubmit: true
+        });
+        $(".frmAddToCart").submit(function(e){
+            e.preventDefault();
+            var url = $(this).prop("action");
+            var method = $(this).prop("method");
+            var data = $(this).serializeArray();
+            $.ajax({
+                url : url,
+                type: method,
+                data : data,
+                success: function(result){
+                    if(result != ""){
+                        alert(result);
+                    }
+                    else{
+                        showShoppingCart();
+                    }
+                }
+            });
+        });
+        renderPagination(@Model.Page, @Model.PageCount);
+    });
+
+</script>

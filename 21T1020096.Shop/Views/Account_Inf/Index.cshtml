@@ -1,0 +1,221 @@
+﻿@model SV21T1020096.DomainModels.Customer
+@using SV21T1020096.BusinessLayers
+@using SV21T1020096.DomainModels    
+@{
+    List<Order> orderList = OrderDataService.ListOrdersFromCustomer(Model.CustomerID);
+}
+<div class="page-header breadcrumb-wrap">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html" rel="nofollow">Trang chủ</a>
+            <span></span> Trang
+            <span></span> Tài khoản của tôi
+        </div>
+    </div>
+</div>
+<section class="pt-150 pb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 m-auto">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="dashboard-menu">
+                            <ul class="nav flex-column" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="false"><i class="fa fa-atom mr-15"></i>Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="fa fa-shopping-basket mr-15"></i>Lịch sử đặt hàng</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fa fa-map-marked mr-15"></i>Địa chỉ</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true"><i class="fa fa-user-edit mr-15"></i>Chỉnh sửa thông tin</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="~/Account_Inf/ChangePassword"><i class="fa fa-lock mr-15"></i>Đổi mật khẩu</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="~/Account/Logout"><i class="fa fa-lock mr-15"></i>Đăng xuất</a>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="tab-content dashboard-content">
+                            <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Xin chào @Model.CustomerName </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Từ bảng điều khiển tài khoản của bạn. Bạn có thể dễ dàng kiểm tra và xem các đơn đặt hàng gần đây của mình, quản lý địa chỉ giao hàng và thanh toán cũng như chỉnh sửa mật khẩu và chi tiết tài khoản của bạn.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Các đơn hàng của bạn đã đặt</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive overflow-auto" style="max-height: 500px">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Mã đơn hàng</th>
+                                                        <th>Thời gian đặt</th>
+                                                        <th>Trạng thái</th>
+                                                        <th>Tổng tiền</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        foreach (Order item in orderList)
+                                                        {
+                                                            var orderDetailList = OrderDataService.ListOrderDetails(item.OrderID);
+                                                            <tr>
+                                                                <td>@item.OrderID</td>
+                                                                <td>@item.OrderTime.ToString("dd-MM-yyyy HH:mm")</td>
+                                                                <td>@item.StatusDescription</td>
+                                                                <td>Tổng số tiền(@orderDetailList.Count() sản phẩm): @orderDetailList.Sum(obj => obj.TotalPrice).ToString("N0") </td>
+                                                                <td><a href="@Url.Action("Order_Infor", "Account_Inf", new { id = item.OrderID })" class="btn-small d-block btn-modal">Chi tiết</a></td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Theo dõi đơn hàng</h5>
+                                    </div>
+                                    <div class="card-body contact-from-area">
+                                        <p>To track your order please enter your OrderID in the box below and press "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <form class="contact-form-style mt-30 mb-50" action="#" method="post">
+                                                    <div class="input-style mb-20">
+                                                        <label>Order ID</label>
+                                                        <input name="order-id" placeholder="Found in your order confirmation email" type="text" class="square">
+                                                    </div>
+                                                    <div class="input-style mb-20">
+                                                        <label>Billing email</label>
+                                                        <input name="billing-email" placeholder="Email you used during checkout" type="email" class="square">
+                                                    </div>
+                                                    <button class="submit submit-auto-width" type="submit">Track</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="card mb-3 mb-lg-0">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Địa chỉ thanh toán</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <address>@Model.Address</address>
+                                                <p>@Model.Province</p>
+                                                <a href="#" class="btn-small">Edit</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Địa chỉ giao hàng</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                @* <address>
+                                                    4299 Express Lane<br>
+                                                    Sarasota, <br>FL 34249 USA <br>Phone: 1.941.227.4444
+                                                </address>
+                                                <p>Sarasota</p> *@
+                                                <a href="#" class="btn-small">Edit</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Chỉnh sửa tài khoản</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST" action="~/Account_Inf/Save">
+                                            <input type="hidden" name="@nameof(Model.CustomerID)" value="@Model.CustomerID" />
+                                            <div class="row">
+                                                <div class="form-group col-md-12">
+                                                    <label>Họ tên <span class="required">*</span></label>
+                                                    <input required="" class="form-control square" name="@nameof(Model.CustomerName)" type="text" value="@Model.CustomerName">
+                                                    @Html.ValidationMessage(nameof(Model.CustomerName), new { @style = "color: #f00" })
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label>Tên giao dịch <span class="required">*</span></label>
+                                                    <input required="" class="form-control square" name="@nameof(Model.ContactName)" value="@Model.ContactName" type="text">
+                                                    @Html.ValidationMessage(nameof(Model.ContactName), new { @style = "color: #f00" })
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label>Địa chỉ Email <span class="required">*</span></label>
+                                                    <input required="" class="form-control square" name="@nameof(Model.Email)" value="@Model.Email" type="email">
+                                                    @Html.ValidationMessage(nameof(Model.Email), new { @style = "color: #f00" })
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label>Số điện thoại <span class="required">*</span></label>
+                                                    <input required="" class="form-control square" name="@nameof(Model.Phone)" type="number" value="@Model.Phone">
+                                                    @Html.ValidationMessage(nameof(Model.Phone), new { @style = "color: #f00" })
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label>Địa chỉ <span class="required">*</span></label>
+                                                    <input required="" class="form-control square" name="@nameof(Model.Address)" type="text" value="@Model.Address">
+                                                    @Html.ValidationMessage(nameof(Model.Address), new { @style = "color: #f00" })
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label>Tỉnh thành <span class="required">*</span></label>
+                                                    <select class="form-control select2" name="@nameof(Model.Province)">
+                                                        <option value="">--Chọn tỉnh thành--</option>
+                                                        @foreach (var province in SV21T1020096.BusinessLayers.CommonDataService.ListOfProvinces())
+                                                        {
+                                                            if (province.ProvinceName == Model.Province)
+                                                            {
+                                                                <option value="@province.ProvinceName" selected>
+                                                                    @province.ProvinceName
+                                                                </option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@province.ProvinceName">
+                                                                    @province.ProvinceName
+                                                                </option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    @Html.ValidationMessage(nameof(Model.Province), new { @style = "color: #f00" })
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-fill-out submit">Lưu</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
